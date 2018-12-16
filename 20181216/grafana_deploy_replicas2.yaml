@@ -1,0 +1,44 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: grafana-dp
+  name: grafana-dp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: grafana-dp
+  template:
+    metadata:
+      labels:
+        app: grafana-dp
+    spec:
+      containers:
+      - image: docker.io/grafana/grafana
+        name: grafana-container
+        volumeMounts:
+        - name: grafana-config
+          mountPath: /etc/grafana/grafana.ini
+          subPath: grafana.ini
+          readOnly: true
+      volumes:
+        - name: grafana-config
+          secret:
+            secretName: grafana
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-svc
+spec:
+  selector:
+    app: grafana-dp
+  type: NodePort
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 3000
+    nodePort: 30080
+    protocol: TCP

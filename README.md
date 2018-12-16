@@ -1,0 +1,1 @@
+# yaml_template_for_everyday
