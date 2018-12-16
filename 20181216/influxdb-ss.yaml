@@ -1,0 +1,27 @@
+apiVersion:	apps/v1
+kind: StatefulSet
+metadata:
+  name: influxdb-ss
+spec:
+  serviceName: "influxdb"
+  replicas:	1
+  selector:
+    matchLabels:
+      app: influxdb-svc
+  template:
+    metadata:
+      labels:
+        app: influxdb-svc
+    spec:
+      containers:
+      - name: influxdb
+        image: docker.io/influxdb
+        ports:
+        - containerPort: 8086
+        volumeMounts:
+        - name: db
+          mountPath: /var/lib/influxdb
+      volumes:
+      - persistentVolumeClaim:
+          claimName: influxdb-pv-claim
+        name: db
